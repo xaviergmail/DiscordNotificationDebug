@@ -56,6 +56,13 @@ I initially ran into this issue with the Discord Windows application.
 I made the assumption that it used Electron's [powerMonitor API](https://www.electronjs.org/docs/api/power-monitor) or the browser equivalent [window.requestIdleCallback](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback) and started investigating.
 After much digging around, I found that Electron creates an invisible off-screen window to listen to sleep and screen lock events and falls back on chromium to detect an inactivity timeout. On Windows platforms, Chromium's [idle handler](https://chromium.googlesource.com/chromium/src/+/refs/tags/89.0.4343.1/ui/base/idle/idle_win.cc) relies on Win32's [GetLastInputInfo](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlastinputinfo). After making this discovery and realizing that GetLastInputInfo was never returning the same tick count, I wrote this program to help me identify the source of the phantom inputs.
 
+## Mac Users
+Disconnect all non-vital peripherals and enable your screensaver
+
+## Linux Users
+Disconnect all non-vital peripherals
+Chromium currently only supports Xorg / Ozone
+
 ## Related bug reports that went unnoticed
 https://support.discord.com/hc/en-us/community/posts/360051256154-Push-Notification-Inactive-Timeout-no-longer-working
 
