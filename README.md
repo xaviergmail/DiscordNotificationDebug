@@ -19,7 +19,6 @@ Example of **correct** output:
 - System has been idle for 5 seconds.
 \ System has been idle for 6 seconds.
 | System has been idle for 7 seconds.
-etc
 ```
 
 Example of **INCORRECT** output:
@@ -59,8 +58,11 @@ After much digging around, I found that Electron creates an invisible off-screen
 
 ## Related bug reports that went unnoticed
 https://support.discord.com/hc/en-us/community/posts/360051256154-Push-Notification-Inactive-Timeout-no-longer-working
+
 https://support.discord.com/hc/en-us/community/posts/360049313814-MOBILE-PUSH-NOTIFICATIONS-REMOVED-Bring-them-back
+
 https://support.discord.com/hc/en-us/community/posts/360052612473-Will-not-receive-push-notifications-until-desktop-client-is-closed
+
 
 ## Other info
 While this solution requires some trial and error by the user's part to find the root cause, it is by far the simplest to implement. After some quick research, I was unable to find any way to reliably determine the source of the input events and it is unknown what kind of events raise the tick count returned by GetLastInputInfo so such an approach may not even be 100% accurate.
