@@ -34,6 +34,7 @@ Example of **INCORRECT** output:
 
 It is also theoretically possible that a device may be sending periodical phantom inputs rather than constantly producing them.
 For example, a device could be generating a single input event every 30 seconds.
+
 Whatever the interval is (if it is lower than the configured idle timeout), discord will never send you mobile push notifications.
 
 Example of **INCORRECT** output (periodical phantom inputs):
@@ -51,25 +52,30 @@ Example of **INCORRECT** output (periodical phantom inputs):
 ```
 
 ## Discord Notification Forcer
-If you are unable (or unwilling) to fix phantom inputs, or you just want to force discord to send you notifications even if you're currently active at your computer, head on over to the [Releases tab](https://github.com/xaviergmail/DiscordNotificationDebug/releases) and download the **`NotificationForcer.exe`**  (or compile force.cpp yourself)
+If you are unable (or unwilling) to fix phantom inputs, or you just want to force discord to send you notifications even if you're currently active at your computer, head on over to the [Releases tab](https://github.com/xaviergmail/DiscordNotificationDebug/releases) and download the **`NotificationForcer.exe`** (or compile force.cpp yourself).
+
 You can either run the program directly which will ask you at what interval you wish to receive mobile notifications. Alternatively, you can supply the time in seconds as a command-line argument if you wish to make this program run in the background as a service or as part of your autorun.
 
 I highly recommend using a value above 30 seconds, as this will toggle your discord status from online to 'away' each time it forces the notifications.
+
 Please note that this targets _ALL_ Electron-based applications as their implementation use system-wide singleton for idle checking. Meaning that other Electron applications relying on the `powerMonitor` api will also get the `suspend` and `lock` signals. Thankfully, Spotify, Tidal and Messenger seem to be unaffected by this from my testing. Please let me know if you find a program that this conflicts with.
 
 Once again, I highly recommend fixing the phantom inputs before relying to this.
 
 ## Background
 I initially ran into this issue with the Discord Windows application.
+
 I made the assumption that it used Electron's [powerMonitor API](https://www.electronjs.org/docs/api/power-monitor) or the browser equivalent [window.requestIdleCallback](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback) and started investigating.
+
 After much digging around, I found that Electron creates an invisible off-screen window to listen to sleep and screen lock events and falls back on chromium to detect an inactivity timeout. On Windows platforms, Chromium's [idle handler](https://chromium.googlesource.com/chromium/src/+/refs/tags/89.0.4343.1/ui/base/idle/idle_win.cc) relies on Win32's [GetLastInputInfo](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlastinputinfo). After making this discovery and realizing that GetLastInputInfo was never returning the same tick count, I wrote this program to help me identify the source of the phantom inputs. 
 
 ## Mac Users
-Disconnect all non-vital peripherals and enable your screensaver
+Disconnect all non-vital peripherals and enable your screensaver.
 
 ## Linux Users
-Disconnect all non-vital peripherals
-Chromium currently only supports Xorg / Ozone
+Disconnect all non-vital peripherals.
+
+Chromium currently only supports Xorg / Ozone.
 
 ## Related bug reports that went unnoticed
 https://support.discord.com/hc/en-us/community/posts/360051256154-Push-Notification-Inactive-Timeout-no-longer-working
